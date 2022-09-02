@@ -1,12 +1,6 @@
 import React, { useContext } from 'react';
-import {
-  createBrowserHistory,
-  createHashHistory,
-  History,
-  BrowserHistoryBuildOptions,
-  HashHistoryBuildOptions,
-} from 'history';
-import { Router, StaticRouter, RouteProps } from 'react-router-dom';
+import { createBrowserHistory, createHashHistory, History } from 'history';
+import { Router, RouteProps } from 'react-router-dom';
 import hoistNonReactStatics from 'hoist-non-react-statics';
 import { RuntimeReactContext } from '../../core';
 import type { Plugin } from '../../core';
@@ -40,22 +34,13 @@ export type SingleRouteConfig = RouteProps & {
   component?: React.ComponentType;
 };
 
-export type HistoryConfig =
-  | {
-      supportHtml5History: true;
-      historyOptions: BrowserHistoryBuildOptions;
-    }
-  | {
-      supportHtml5History: false;
-      historyOptions: HashHistoryBuildOptions;
-    };
-
-export type RouterConfig = Partial<HistoryConfig> & {
+export type RouterConfig = {
   routesConfig?: {
     globalApp?: React.ComponentType<any>;
     routes?: SingleRouteConfig[];
   };
   history?: History;
+  supportHtml5History?: boolean;
   serverBase?: string[];
 };
 
@@ -64,7 +49,6 @@ export const routerPlugin = ({
   history: customHistory,
   supportHtml5History = true,
   routesConfig,
-  historyOptions = {},
 }: RouterConfig): Plugin => {
   const isBrow = isBrowser();
 

@@ -6,4 +6,5 @@ export type { SingleRouteConfig, HistoryConfig, RouterConfig };
 export default routerPlugin;
 
 export * from 'react-router-dom';
-export * from 'history';
+// multiple export in react-router-dom v6 and history v5;
+// export * from 'history';

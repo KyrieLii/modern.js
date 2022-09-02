@@ -20,11 +20,14 @@ export function renderRoutes(
 
   const findMatchedRoute = (pathname: string) =>
     routesConfig?.routes?.find(route => {
-      const info = matchPath(pathname, {
-        path: route.path,
-        exact: route.exact,
-        sensitive: route.sensitive,
-      });
+      const info = matchPath(
+        {
+          path: route.path,
+          exact: route.exact,
+          sensitive: route.sensitive,
+        },
+        pathname,
+      );
 
       return Boolean(info);
     });
