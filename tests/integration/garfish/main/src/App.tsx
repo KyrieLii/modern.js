@@ -1,5 +1,5 @@
 import { useModuleApps } from '@modern-js/plugin-garfish';
-import { Switch, Route, Link } from '@modern-js/runtime/router';
+import { Routes, Route, Link } from '@modern-js/runtime/router';
 import { getAppInfo } from '../../../../utils/testCase';
 import { name } from '../package.json';
 import './App.css';
@@ -33,24 +33,25 @@ const App: React.FC = () => {
         </Link>{' '}
         &nbsp;
       </div>
-      <Switch>
-        <Route path="/" exact={true}>
-          <Home />
-        </Route>
-        <Route path="/dashboard" exact={false}>
-          <Dashboard
-            msg={'hello world from main app'}
-            loadable={{
-              loading: ({ _pastDelay, error }: any) => {
-                if (error) {
-                  return <div>error: {error?.message}</div>;
-                } else {
-                  return <div>dashboard loading</div>;
-                }
-              },
-            }}
-          />
-        </Route>
+      <Routes>
+        <Route path="/" element={<Home />}></Route>
+        <Route
+          path="/dashboard"
+          element={
+            <Dashboard
+              msg={'hello world from main app'}
+              loadable={{
+                loading: ({ _pastDelay, error }: any) => {
+                  if (error) {
+                    return <div>error: {error?.message}</div>;
+                  } else {
+                    return <div>dashboard loading</div>;
+                  }
+                },
+              }}
+            />
+          }
+        ></Route>
         {/* <Route path="/tablelist" exact={false}>
           <TableList
             loadable={{
@@ -66,7 +67,7 @@ const App: React.FC = () => {
             }}
           />
         </Route> */}
-      </Switch>
+      </Routes>
       <MApp
         msg={'hello world'}
         loadable={{
