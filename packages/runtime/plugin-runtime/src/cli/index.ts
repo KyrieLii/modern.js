@@ -1,10 +1,18 @@
 import path from 'path';
+import fs from 'fs';
 import { PLUGIN_SCHEMAS, cleanRequireCache, isReact18 } from '@modern-js/utils';
 import type { CliPlugin } from '@modern-js/core';
 import PluginRouterLegacy from '@modern-js/plugin-router-legacy/cli';
 import PluginState from '../state/cli';
 import PluginSSR from '../ssr/cli';
 import PluginRouter from '../router/cli';
+
+// FIXME:
+const packageJsonPath = path.join(process.cwd(), 'package.json');
+const hasLegacyRouterPlugin = fs
+  .readFileSync(packageJsonPath)
+  .toString()
+  .includes('@modern-js/plugin-router-legacy');
 
 export default (): CliPlugin => ({
   name: '@modern-js/runtime',
@@ -18,8 +26,7 @@ export default (): CliPlugin => ({
   usePlugins: [
     PluginState(),
     PluginSSR(),
-    PluginRouterLegacy(),
-    PluginRouter(),
+    hasLegacyRouterPlugin ? PluginRouterLegacy() : PluginRouter(),
   ],
   setup: api => {
     return {
