@@ -1,6 +1,11 @@
 import React, { useContext } from 'react';
-import { HashRouter, BrowserRouter, useLocation } from 'react-router-dom';
-import type { RouteProps } from 'react-router-dom';
+import {
+  HashRouter,
+  BrowserRouter,
+  useLocation,
+  useRoutes,
+} from 'react-router-dom';
+import type { RouteProps, RouteObject } from 'react-router-dom';
 import { StaticRouter } from 'react-router-dom/server';
 import hoistNonReactStatics from 'hoist-non-react-statics';
 import { RuntimeReactContext, ServerRouterContext } from '../../core';
@@ -43,12 +48,14 @@ export type RouterConfig = {
   };
   serverBase?: string[];
   supportHtml5History?: boolean;
+  configRoutes?: any[]; // FIXME: type
 };
 
 export const routerPlugin = ({
   serverBase = [],
   supportHtml5History = true,
   routesConfig,
+  configRoutes,
 }: RouterConfig): Plugin => {
   const isBrow = isBrowser();
 
@@ -70,11 +77,14 @@ export const routerPlugin = ({
 
               const RouterContent = (props: any) => {
                 const location = useLocation();
+                const element = useRoutes(configRoutes as RouteObject[]);
+
+                const fileBasedRoutes = routesConfig
+                  ? renderRoutes(routesConfig, location.pathname, props)
+                  : null;
                 return (
                   <App {...props}>
-                    {routesConfig
-                      ? renderRoutes(routesConfig, location.pathname, props)
-                      : null}
+                    {configRoutes ? element : fileBasedRoutes}
                   </App>
                 );
               };
