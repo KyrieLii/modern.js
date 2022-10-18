@@ -1,5 +1,7 @@
 import { ServerRoute } from '../server';
 
+export * from './router';
+
 /**
  * Bundle entrypoint
  */
@@ -12,6 +14,7 @@ export interface Entrypoint {
     globalApp?: string | false;
     routes?: any[];
   };
+  configRoutes?: string | false;
 }
 
 /**

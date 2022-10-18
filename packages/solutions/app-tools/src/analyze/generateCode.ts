@@ -10,6 +10,7 @@ import type {
 import type { Entrypoint } from '@modern-js/types';
 import * as templates from './templates';
 import { getClientRoutes } from './getClientRoutes';
+import { getConfigRoutes } from './getConfigRoutes';
 import {
   FILE_SYSTEM_ROUTES_FILE_NAME,
   ENTRY_POINT_FILE_NAME,
@@ -98,8 +99,13 @@ export const generateCode = async (
   } = config;
 
   for (const entrypoint of entrypoints) {
-    const { entryName, isAutoMount, customBootstrap, fileSystemRoutes } =
-      entrypoint;
+    const {
+      entryName,
+      isAutoMount,
+      customBootstrap,
+      fileSystemRoutes,
+      configRoutes,
+    } = entrypoint;
     if (isAutoMount) {
       // generate routes file for file system routes entrypoint.
       if (fileSystemRoutes) {
@@ -121,6 +127,32 @@ export const generateCode = async (
           code: templates.fileSystemRoutes({ routes }),
         });
 
+        fs.outputFileSync(
+          path.resolve(
+            internalDirectory,
+            `./${entryName}/${FILE_SYSTEM_ROUTES_FILE_NAME}`,
+          ),
+          code,
+          'utf8',
+        );
+      }
+
+      // config routes
+      if (configRoutes) {
+        const routes = await getConfigRoutes({
+          entrypoint,
+          srcDirectory,
+          srcAlias: internalSrcAlias,
+          internalDirectory,
+          internalDirAlias,
+        });
+
+        const { code } = await hookRunners.beforeGenerateRoutes({
+          entrypoint,
+          code: templates.configRoutes({ routes }),
+        });
+
+        // will overrides file system routes;
         fs.outputFileSync(
           path.resolve(
             internalDirectory,

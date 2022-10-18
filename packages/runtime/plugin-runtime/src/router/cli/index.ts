@@ -7,8 +7,8 @@ import { ServerRoute } from '@modern-js/types';
 import type { CliPlugin } from '@modern-js/core';
 
 const PLUGIN_IDENTIFIER = 'router';
-
 const ROUTES_IDENTIFIER = 'routes';
+const CONFIG_ROUTES_IDENTIFIER = 'configRoutes';
 
 export default (): CliPlugin => ({
   name: '@modern-js/plugin-router',
@@ -46,7 +46,7 @@ export default (): CliPlugin => ({
         return PLUGIN_SCHEMAS['@modern-js/plugin-router'];
       },
       modifyEntryImports({ entrypoint, imports }: any) {
-        const { entryName, fileSystemRoutes } = entrypoint;
+        const { entryName, fileSystemRoutes, configRoutes } = entrypoint;
         const userConfig = api.useResolvedConfigContext();
         const isLegacy = Boolean(userConfig?.runtime?.router?.legacy);
         const { packageName } = api.useAppContext();
@@ -66,6 +66,13 @@ export default (): CliPlugin => ({
               value: '@modern-js/runtime/plugins',
               specifiers: [{ imported: PLUGIN_IDENTIFIER }],
             });
+
+            if (configRoutes) {
+              imports.push({
+                value: `./routes`,
+                specifiers: [{ local: CONFIG_ROUTES_IDENTIFIER }],
+              });
+            }
           }
         } else if (fileSystemRoutes) {
           throw new Error(
@@ -79,7 +86,7 @@ export default (): CliPlugin => ({
         };
       },
       modifyEntryRuntimePlugins({ entrypoint, plugins }: any) {
-        const { entryName, fileSystemRoutes } = entrypoint;
+        const { entryName, fileSystemRoutes, configRoutes } = entrypoint;
         const { serverRoutes } = api.useAppContext();
         const userConfig = api.useResolvedConfigContext();
         const isLegacy = Boolean(userConfig?.runtime?.router?.legacy);
@@ -92,18 +99,25 @@ export default (): CliPlugin => ({
             .map(route => route.urlPath)
             .sort((a, b) => (a.length - b.length > 0 ? -1 : 1));
 
+          // configRoutes: config router by src/routes.(t|j)s
+          // routesConfig: file-based router
           plugins.push({
             name: PLUGIN_IDENTIFIER,
             options: JSON.stringify({
               serverBase,
+              configRoutes: configRoutes
+                ? `${CONFIG_ROUTES_IDENTIFIER}`
+                : undefined,
               ...runtimeConfig.router,
               routesConfig: fileSystemRoutes
                 ? `{ ${ROUTES_IDENTIFIER}, globalApp: App }`
                 : undefined,
-            }).replace(
-              /"routesConfig"\s*:\s*"((\S|\s)+)"/g,
-              '"routesConfig": $1,',
-            ),
+            })
+              .replace(
+                /"routesConfig"\s*:\s*"((\S|\s)+)"/g,
+                '"routesConfig": $1,',
+              )
+              .replace(/"configRoutes"\s*:\s*"((\S|\s)+)"/g, '$1,'),
           });
         }
         return {

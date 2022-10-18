@@ -113,3 +113,21 @@ export const routes = ${JSON.stringify(routes, null, 2).replace(
   '"component": $1',
 )}
 `;
+
+export const configRoutes = ({ routes, lazy = false }: any) => {
+  const result = [];
+  result.push(
+    lazy
+      ? "import React from 'react'"
+      : "import loadable from '@modern-js/runtime/loadable';",
+  );
+  result.push(
+    routes.replace(/(?<=component:).*?(?=,)/g, ($1: string) => {
+      return lazy
+        ? ` React.lazy(() => import(${$1}))`
+        : ` loadable(() => import(${$1}))`;
+    }),
+  );
+
+  return result.join('\n\n');
+};

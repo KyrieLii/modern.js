@@ -37,6 +37,7 @@ export type SingleRouteConfig = RouteProps & {
 
 export type RouterConfig = {
   legacy?: boolean;
+  configRoutes: any[];
   routesConfig?: {
     globalApp?: React.ComponentType<any>;
     routes?: SingleRouteConfig[];
@@ -48,6 +49,7 @@ export type RouterConfig = {
 export const routerPlugin = ({
   serverBase = [],
   supportHtml5History = true,
+  configRoutes,
   routesConfig,
 }: RouterConfig): Plugin => {
   const isBrow = isBrowser();
