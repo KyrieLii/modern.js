@@ -5,6 +5,7 @@ import {
 } from '@modern-js/utils';
 import { ServerRoute } from '@modern-js/types';
 import type { CliPlugin } from '@modern-js/core';
+// import RoutesBabel from './routes-babel';
 
 const PLUGIN_IDENTIFIER = 'router';
 
@@ -38,6 +39,15 @@ export default (): CliPlugin => ({
             alias: {
               '@modern-js/runtime/plugins': pluginsExportsUtils.getPath(),
               '@modern-js/runtime/router': routerExportsUtils.getPath(),
+            },
+          },
+          tools: {
+            webpackChain: chain => {
+              chain.module
+                .rule('ConfigRoutes')
+                .test('routes.(t|j)s')
+                .use('ConfigRoutesBabelLoader');
+              return chain;
             },
           },
         };

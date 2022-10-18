@@ -177,7 +177,8 @@
     "@testing-library/react-hooks": "^8.0.1",
     "@types/invariant": "^2.2.30",
     "@babel/types": "^7.18.0",
-    "@babel/template": "7.16.7"
+    "@babel/template": "7.16.7",
+    "webpack": "^5.74.0"
   },
   "sideEffects": false,
   "modernConfig": {},
