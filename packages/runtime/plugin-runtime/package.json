@@ -175,7 +175,9 @@
     "@scripts/jest-config": "workspace:*",
     "@testing-library/react": "^13.4.0",
     "@testing-library/react-hooks": "^8.0.1",
-    "@types/invariant": "^2.2.30"
+    "@types/invariant": "^2.2.30",
+    "@babel/types": "^7.18.0",
+    "@babel/template": "7.16.7"
   },
   "sideEffects": false,
   "modernConfig": {},
