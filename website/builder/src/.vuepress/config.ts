@@ -39,8 +39,16 @@ function getSidebar(lang: 'cn' | 'en'): SidebarConfig4Multiple {
         children: [
           getLink('/guide/introduction'),
           getLink('/guide/quick-start'),
-          getLink('/guide/features'),
           getLink('/guide/glossary'),
+          getLink('/guide/features'),
+        ],
+      },
+      {
+        collapsable: false,
+        title: getText('常见问题', 'FAQ'),
+        children: [
+          getLink('/guide/faq/features'),
+          getLink('/guide/faq/exceptions'),
         ],
       },
       {
