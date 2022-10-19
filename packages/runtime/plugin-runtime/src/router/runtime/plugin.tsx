@@ -1,17 +1,13 @@
 import React, { useContext } from 'react';
-import {
-  HashRouter,
-  BrowserRouter,
-  useLocation,
-  useRoutes,
-} from 'react-router-dom';
-import type { RouteProps, RouteObject } from 'react-router-dom';
+import { HashRouter, BrowserRouter, useLocation } from 'react-router-dom';
+import type { RouteProps } from 'react-router-dom';
 import { StaticRouter } from 'react-router-dom/server';
 import hoistNonReactStatics from 'hoist-non-react-statics';
 import { RuntimeReactContext, ServerRouterContext } from '../../core';
 import type { Plugin } from '../../core';
 import { isBrowser } from '../../common';
 import { renderRoutes, getLocation, urlJoin } from './utils';
+import ConfigRoutes from './ConfigRoutes';
 
 declare global {
   interface Window {
@@ -77,14 +73,17 @@ export const routerPlugin = ({
 
               const RouterContent = (props: any) => {
                 const location = useLocation();
-                const element = useRoutes(configRoutes as RouteObject[]);
 
                 const fileBasedRoutes = routesConfig
                   ? renderRoutes(routesConfig, location.pathname, props)
                   : null;
                 return (
                   <App {...props}>
-                    {configRoutes ? element : fileBasedRoutes}
+                    {configRoutes ? (
+                      <ConfigRoutes routes={configRoutes} />
+                    ) : (
+                      fileBasedRoutes
+                    )}
                   </App>
                 );
               };
