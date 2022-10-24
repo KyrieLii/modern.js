@@ -11,6 +11,8 @@ const PLUGIN_IDENTIFIER = 'router';
 
 const ROUTES_IDENTIFIER = 'routes';
 
+const CONFIG_ROUTES_IDENTIFIER = 'configRoutes';
+
 export default (): CliPlugin => ({
   name: '@modern-js/plugin-router',
   required: ['@modern-js/runtime'],
@@ -41,16 +43,43 @@ export default (): CliPlugin => ({
               '@modern-js/runtime/router': routerExportsUtils.getPath(),
             },
           },
+
+          tools: {
+            webpackChain: (chain, { CHAIN_ID }) => {
+              chain.module
+                .rule(CHAIN_ID.RULE.LOADERS)
+                .oneOf(CHAIN_ID.ONE_OF.JS)
+                .use(CHAIN_ID.USE.BABEL)
+                .tap(options => {
+                  chain.module
+                    .rule('routes')
+                    .oneOf(CHAIN_ID.ONE_OF.JS)
+                    .test(/routes.ts/)
+                    .exclude.add(/node_modules\/*/)
+                    .end()
+                    .use('routes-loader')
+                    .loader(path.join(__dirname, 'routes-loader.js'))
+                    .end()
+                    .use(CHAIN_ID.USE.BABEL)
+                    .loader(path.join(__dirname, 'babel-plugin-routes.js'))
+                    .options(options)
+                    .end()
+                    .before(CHAIN_ID.USE.BABEL);
+                  return options;
+                });
+              return chain;
+            },
+          },
         };
       },
       validateSchema() {
         return PLUGIN_SCHEMAS['@modern-js/plugin-router'];
       },
       modifyEntryImports({ entrypoint, imports }: any) {
-        const { entryName, fileSystemRoutes } = entrypoint;
+        const { entryName, fileSystemRoutes, configRoutes } = entrypoint;
         const userConfig = api.useResolvedConfigContext();
         const isLegacy = Boolean(userConfig?.runtime?.router?.legacy);
-        const { packageName } = api.useAppContext();
+        const { packageName, internalSrcAlias } = api.useAppContext();
 
         const runtimeConfig = getEntryOptions(
           entryName,
@@ -67,6 +96,12 @@ export default (): CliPlugin => ({
               value: '@modern-js/runtime/plugins',
               specifiers: [{ imported: PLUGIN_IDENTIFIER }],
             });
+            if (configRoutes) {
+              imports.push({
+                value: `${internalSrcAlias}/routes`,
+                specifiers: [{ local: CONFIG_ROUTES_IDENTIFIER }],
+              });
+            }
           }
         } else if (fileSystemRoutes) {
           throw new Error(
@@ -80,7 +115,7 @@ export default (): CliPlugin => ({
         };
       },
       modifyEntryRuntimePlugins({ entrypoint, plugins }: any) {
-        const { entryName, fileSystemRoutes } = entrypoint;
+        const { entryName, fileSystemRoutes, configRoutes } = entrypoint;
         const { serverRoutes } = api.useAppContext();
         const userConfig = api.useResolvedConfigContext();
         const isLegacy = Boolean(userConfig?.runtime?.router?.legacy);
@@ -97,14 +132,23 @@ export default (): CliPlugin => ({
             name: PLUGIN_IDENTIFIER,
             options: JSON.stringify({
               serverBase,
+              configRoutes: configRoutes
+                ? `${CONFIG_ROUTES_IDENTIFIER}`
+                : undefined,
               ...runtimeConfig.router,
               routesConfig: fileSystemRoutes
                 ? `{ ${ROUTES_IDENTIFIER}, globalApp: App }`
                 : undefined,
-            }).replace(
-              /"routesConfig"\s*:\s*"((\S|\s)+)"/g,
-              '"routesConfig": $1,',
-            ),
+            })
+              .replace(
+                /"routesConfig"\s*:\s*"((\S|\s)+)"/g,
+                '"routesConfig": $1,',
+              )
+              .replace(
+                /"routesConfig"\s*:\s*"((\S|\s)+)"/g,
+                '"routesConfig": $1,',
+              )
+              .replace(/"configRoutes"\s*:\s*"((\S|\s)+)"/g, '$1,'),
           });
         }
         return {

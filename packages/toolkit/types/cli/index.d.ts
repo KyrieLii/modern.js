@@ -14,6 +14,7 @@ export interface Entrypoint {
     globalApp?: string | false;
     routes?: any[];
   };
+  configRoutes?: string | false;
 }
 
 /**
