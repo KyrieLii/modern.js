@@ -2647,6 +2647,7 @@ importers:
 
   packages/solutions/app-tools:
     specifiers:
+      '@babel/generator': ^7.18.0
       '@babel/parser': ^7.18.0
       '@babel/runtime': ^7.18.0
       '@babel/traverse': ^7.18.0
@@ -2666,12 +2667,14 @@ importers:
       '@modern-js/webpack': workspace:*
       '@scripts/build': workspace:*
       '@scripts/jest-config': workspace:*
+      '@types/babel__generator': ^7.6.3
       '@types/babel__traverse': ^7.14.2
       '@types/jest': ^27
       '@types/node': ^14
       jest: ^27
       typescript: ^4
     dependencies:
+      '@babel/generator': 7.18.6
       '@babel/parser': 7.18.6
       '@babel/runtime': 7.18.6
       '@babel/traverse': 7.18.6
@@ -2692,6 +2695,7 @@ importers:
       '@modern-js/server-core': link:../../server/core
       '@scripts/build': link:../../../scripts/build
       '@scripts/jest-config': link:../../../scripts/jest-config
+      '@types/babel__generator': 7.6.4
       '@types/babel__traverse': 7.17.1
       '@types/jest': 27.5.2
       '@types/node': 14.18.21
@@ -13427,10 +13431,8 @@ packages:
     dependencies:
       ajv: 6.12.6
 
-  /ajv-formats/2.1.1_ajv@8.11.0:
+  /ajv-formats/2.1.1:
     resolution: {integrity: sha512-Wx0Kx52hxE7C18hkMEggYlEifqWZtYaRgouJor+WMdPnQyEK13vgEWyVNup7SoeeoLMsr4kf5h6dOW11I15MUA==}
-    peerDependencies:
-      ajv: ^8.0.0
     peerDependenciesMeta:
       ajv:
         optional: true
@@ -29557,7 +29559,7 @@ packages:
     dependencies:
       '@types/json-schema': 7.0.11
       ajv: 8.11.0
-      ajv-formats: 2.1.1_ajv@8.11.0
+      ajv-formats: 2.1.1
       ajv-keywords: 5.1.0_ajv@8.11.0
 
   /scmp/2.1.0:

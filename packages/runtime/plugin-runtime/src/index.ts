@@ -1,5 +1,5 @@
 import type { StateConfig } from './state';
-import type { RouterConfig } from './router';
+import type { RouterConfig, DefinedRoutes } from './router';
 
 export type { Plugin } from './core';
 export type { AppConfig } from './common';
@@ -24,4 +24,4 @@ export {
   useRuntimeContext,
 } from './core';
 
-export { StateConfig, RouterConfig };
+export { StateConfig, RouterConfig, DefinedRoutes };

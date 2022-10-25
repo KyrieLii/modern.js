@@ -6,6 +6,7 @@ import type {
   Route,
   RouteLegacy,
 } from '@modern-js/types';
+import type { Lazy } from './traverseConfigRoutes';
 
 export const index = ({
   mountId,
@@ -199,4 +200,22 @@ export const fileSystemRoutes = ({
     ${importErrorComponentsCode}
     ${routeComponentsCode}
   `;
+};
+
+export const configRoutes = ({
+  routes,
+  lazy = true,
+}: {
+  routes: any;
+  lazy: Lazy;
+}) => {
+  let imports = '';
+
+  if (lazy === true) {
+    imports = "import React from 'react';";
+  } else if (typeof lazy === 'object' && lazy.mode === 'loadable') {
+    imports = "import loadable from '@modern-js/runtime/loadable';";
+  }
+
+  return [imports, routes].join('\n\n');
 };

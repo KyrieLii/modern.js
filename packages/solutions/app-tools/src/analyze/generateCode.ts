@@ -17,6 +17,7 @@ import type {
 } from '@modern-js/types';
 import * as templates from './templates';
 import { getClientRoutes, getClientRoutesLegacy } from './getClientRoutes';
+import { getConfigRoutes } from './getConfigRoutes';
 import {
   FILE_SYSTEM_ROUTES_FILE_NAME,
   ENTRY_POINT_FILE_NAME,
@@ -105,8 +106,13 @@ export const generateCode = async (
   const getRoutes = islegacy ? getClientRoutesLegacy : getClientRoutes;
 
   for (const entrypoint of entrypoints) {
-    const { entryName, isAutoMount, customBootstrap, fileSystemRoutes } =
-      entrypoint;
+    const {
+      entryName,
+      isAutoMount,
+      customBootstrap,
+      fileSystemRoutes,
+      configRoutes,
+    } = entrypoint;
     if (isAutoMount) {
       // generate routes file for file system routes entrypoint.
       if (fileSystemRoutes) {
@@ -155,6 +161,33 @@ export const generateCode = async (
           code: templates.fileSystemRoutes({ routes, ssrMode: mode }),
         });
 
+        fs.outputFileSync(
+          path.resolve(
+            internalDirectory,
+            `./${entryName}/${FILE_SYSTEM_ROUTES_FILE_NAME}`,
+          ),
+          code,
+          'utf8',
+        );
+      }
+
+      // config routes
+      if (configRoutes) {
+        const lazy = config?.runtime?.router?.lazy;
+        const routes = await getConfigRoutes({
+          entrypoint,
+          lazy,
+        });
+
+        const { code } = await hookRunners.beforeGenerateRoutes({
+          entrypoint,
+          code: templates.configRoutes({
+            routes,
+            lazy,
+          }),
+        });
+
+        // will overrides file system routes;
         fs.outputFileSync(
           path.resolve(
             internalDirectory,

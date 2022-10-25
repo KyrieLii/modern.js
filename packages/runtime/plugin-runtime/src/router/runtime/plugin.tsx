@@ -8,6 +8,7 @@ import { RuntimeReactContext, ServerRouterContext } from '../../core';
 import type { Plugin } from '../../core';
 import { isBrowser } from '../../common';
 import { renderRoutes, getLocation, urlJoin } from './utils';
+import ConfigRoutes, { DefinedRoutes } from './ConfigRoutes';
 
 declare global {
   interface Window {
@@ -37,6 +38,7 @@ export type SingleRouteConfig = RouteProps & {
 };
 
 export type RouterConfig = {
+  lazy?: boolean | { mode: 'loadable' };
   legacy?: boolean;
   routesConfig?: {
     globalApp?: React.ComponentType<any>;
@@ -50,7 +52,8 @@ export const routerPlugin = ({
   serverBase = [],
   supportHtml5History = true,
   routesConfig,
-}: RouterConfig): Plugin => {
+  configRoutes: routesListByConfigFile,
+}: RouterConfig & { configRoutes?: DefinedRoutes }): Plugin => {
   const isBrow = isBrowser();
 
   const select = (pathname: string) =>
@@ -68,17 +71,18 @@ export const routerPlugin = ({
 
               const Router = supportHtml5History ? BrowserRouter : HashRouter;
 
-              const RouterContent = (props: any) => {
-                return (
-                  <App {...props}>
-                    {routesConfig ? renderRoutes(routesConfig) : null}
-                  </App>
-                );
-              };
-
+              const nestedRoutes = routesConfig
+                ? renderRoutes(routesConfig)
+                : null;
               return (props: any) => (
                 <Router basename={baseUrl}>
-                  <RouterContent {...props} />
+                  <App {...props}>
+                    {routesListByConfigFile ? (
+                      <ConfigRoutes routes={routesListByConfigFile} />
+                    ) : (
+                      nestedRoutes
+                    )}
+                  </App>
                 </Router>
               );
             }
