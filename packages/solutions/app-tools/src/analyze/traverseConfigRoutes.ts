@@ -11,7 +11,7 @@ const isTargetProp = (node: any, prop: string): boolean =>
 
 export const traverseConfigRoutes = (
   file: string | false,
-  lazy?: Lazy,
+  lazy: Lazy = true,
 ): string => {
   if (!file || !fs.existsSync(file)) {
     return '';
