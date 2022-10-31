@@ -4497,6 +4497,21 @@ importers:
   tests/integration/runtime:
     specifiers: {}
 
+  tests/integration/runtime/fixtures/config-routes:
+    specifiers:
+      '@modern-js/app-tools': workspace:*
+      '@modern-js/runtime': workspace:*
+      react: ^18
+      react-dom: ^18
+      typescript: ^4
+    dependencies:
+      '@modern-js/runtime': link:../../../../../packages/runtime/plugin-runtime
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    devDependencies:
+      '@modern-js/app-tools': link:../../../../../packages/solutions/app-tools
+      typescript: 4.7.4
+
   tests/integration/runtime/fixtures/file-based-router:
     specifiers:
       '@babel/runtime': ^7
@@ -13423,8 +13438,10 @@ packages:
     dependencies:
       ajv: 6.12.6
 
-  /ajv-formats/2.1.1:
+  /ajv-formats/2.1.1_ajv@8.11.0:
     resolution: {integrity: sha512-Wx0Kx52hxE7C18hkMEggYlEifqWZtYaRgouJor+WMdPnQyEK13vgEWyVNup7SoeeoLMsr4kf5h6dOW11I15MUA==}
+    peerDependencies:
+      ajv: ^8.0.0
     peerDependenciesMeta:
       ajv:
         optional: true
@@ -29551,7 +29568,7 @@ packages:
     dependencies:
       '@types/json-schema': 7.0.11
       ajv: 8.11.0
-      ajv-formats: 2.1.1
+      ajv-formats: 2.1.1_ajv@8.11.0
       ajv-keywords: 5.1.0_ajv@8.11.0
 
   /scmp/2.1.0:
