@@ -1,13 +1,15 @@
-import { defineConfig } from '@modern-js/app-tools';
+import AppToolsPlugin, { defineConfig } from '@modern-js/app-tools';
+import GarfishPlugin from '@modern-js/plugin-garfish';
+import RouterV5Plugin from '@modern-js/plugin-router-v5';
 import { getPort, getPublicPath } from '../../../utils/testCase';
 
 const port = getPort('@cypress-test/garfish-main');
 
 module.exports = defineConfig({
+  plugins: [AppToolsPlugin(), GarfishPlugin(), RouterV5Plugin()],
   runtime: {
     router: {
-      legacy: true,
-      supportHtml5History: true,
+      mode: 'react-router-5',
       historyOptions: {
         basename: '/test',
       },
