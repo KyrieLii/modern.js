@@ -4577,9 +4577,6 @@ importers:
       '@modern-js/core':
         specifier: workspace:*
         version: link:../../cli/core
-      '@modern-js/new-action':
-        specifier: workspace:*
-        version: link:../../generator/new-action
       '@modern-js/node-bundle-require':
         specifier: workspace:*
         version: link:../../toolkit/node-bundle-require
@@ -4613,9 +4610,6 @@ importers:
       '@modern-js/uni-builder':
         specifier: workspace:*
         version: link:../../builder/uni-builder
-      '@modern-js/upgrade':
-        specifier: workspace:*
-        version: link:../../toolkit/upgrade
       '@modern-js/utils':
         specifier: workspace:*
         version: link:../../toolkit/utils
