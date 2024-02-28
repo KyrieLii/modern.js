@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  module-linux:
+  generator-testing-linux:
     runs-on: ubuntu-latest
 
     steps:
@@ -28,13 +28,12 @@ jobs:
       - name: Install Dependencies
         run: |
           pnpm install
-          cd ./tests
 
       - name: Test MWA
-        run: LOCAL=true SIMPLE=true pnpm run test:mwa
+        run: LOCAL=true SIMPLE=true pnpm --filter ./tests run test:mwa
 
       - name: Test Module
-        run: LOCAL=true SIMPLE=true pnpm run test:module
+        run: LOCAL=true SIMPLE=true pnpm --filter ./tests run test:module
 
       - name: Test Monorepo
-        run: LOCAL=true SIMPLE=true pnpm run test:monorepo
+        run: LOCAL=true SIMPLE=true pnpm --filter ./tests run test:monorepo
