@@ -1,10 +1,6 @@
 import { GeneratorContext, GeneratorCore } from '@modern-js/codesmith';
 import { AppAPI } from '@modern-js/codesmith-api-app';
-import {
-  chalk,
-  getModernConfigFile,
-  getGeneratorPath,
-} from '@modern-js/generator-utils';
+import { chalk, getModernConfigFile } from '@modern-js/generator-utils';
 import {
   DependenceGenerator,
   i18n as commonI18n,
@@ -16,6 +12,8 @@ const handleTemplateFile = async (
   _generator: GeneratorCore,
   appApi: AppAPI,
 ) => {
+  console.log(context.config);
+  const { getGeneratorPath } = context.config;
   await appApi.runSubGenerator(
     getGeneratorPath(DependenceGenerator, context.config.distTag, [__dirname]),
     undefined,

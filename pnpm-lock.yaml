@@ -2292,6 +2292,9 @@ importers:
       '@modern-js/codesmith':
         specifier: 2.3.5
         version: 2.3.5
+      '@modern-js/codesmith-api-app':
+        specifier: 2.3.5
+        version: 2.3.5(@modern-js/codesmith@2.3.5)(typescript@5.3.3)
       '@modern-js/codesmith-formily':
         specifier: 2.3.5
         version: 2.3.5(@modern-js/codesmith@2.3.5)(typescript@5.3.3)
@@ -2301,6 +2304,9 @@ importers:
       '@modern-js/generator-utils':
         specifier: workspace:*
         version: link:../generator-utils
+      '@modern-js/plugin-i18n':
+        specifier: workspace:*
+        version: link:../../cli/plugin-i18n
       '@modern-js/utils':
         specifier: workspace:*
         version: link:../../toolkit/utils
@@ -2308,6 +2314,12 @@ importers:
         specifier: 0.5.3
         version: 0.5.3
     devDependencies:
+      '@modern-js/dependence-generator':
+        specifier: workspace:*
+        version: link:../generators/dependence-generator
+      '@modern-js/ssg-generator':
+        specifier: workspace:*
+        version: link:../generators/ssg-generator
       '@scripts/build':
         specifier: workspace:*
         version: link:../../../scripts/build
@@ -6523,6 +6535,8 @@ importers:
         version: 4.17.21
 
   tests/integration/module/fixtures/build/tsconfig: {}
+
+  tests/integration/module/fixtures/build/tsconfigExtends: {}
 
   tests/integration/module/fixtures/build/umdGlobals: {}
 

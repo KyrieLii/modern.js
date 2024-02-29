@@ -61,24 +61,39 @@ export function hasEnabledFunction(
   return false;
 }
 
+// generators dependence directly
+const dependenceGenerators = [
+  '@modern-js/ssg-generator',
+  '@modern-js/dependence-generator',
+];
+const GeneratorMap: Record<string, string> = dependenceGenerators.reduce<
+  Record<string, string>
+>((cur, item) => {
+  cur[item] = require.resolve(item);
+  return cur;
+}, {});
+
 export function getGeneratorPath(generator: string, distTag: string) {
-  if (process.env.CODESMITH_ENV === 'development') {
-    return path.dirname(require.resolve(generator));
-  } else if (distTag) {
-    return `${generator}@${distTag}`;
+  try {
+    console.log('getGeneratorPath', generator);
+    return GeneratorMap[generator] ?? path.dirname(require.resolve(generator));
+  } catch (e) {
+    console.error(e);
+    return distTag ? `${generator}@${distTag}` : generator;
   }
-  return generator;
 }
 
 export async function usePluginNameExport(
   solution: Solution,
   options: Record<string, string>,
 ) {
+  console.log(solution, SolutionToolsMap[Solution.MWA], options);
   const solutionVersion = await getModernPluginVersion(
     solution,
     SolutionToolsMap[Solution.MWA],
     options,
   );
+  console.log('solutionVersion', solutionVersion);
   if (semver.valid(solutionVersion) && semver.gte(solutionVersion, '2.0.0')) {
     return semver.gt(solutionVersion, '2.24.0');
   }

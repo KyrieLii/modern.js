@@ -1,5 +1,5 @@
 const { generatorBuildConfig } = require('@scripts/build');
 
 module.exports = {
-  buildConfig: generatorBuildConfig,
+  buildConfig: { ...generatorBuildConfig, autoExternal: true },
 };

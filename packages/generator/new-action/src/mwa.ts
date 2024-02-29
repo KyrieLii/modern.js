@@ -55,6 +55,7 @@ export const MWANewAction = async (options: IMWANewActionOption) => {
 
   try {
     UserConfig = JSON.parse(config);
+    console.log('UserConfig', UserConfig);
   } catch (e) {
     throw new Error('config is not a valid json');
   }
@@ -107,6 +108,7 @@ export const MWANewAction = async (options: IMWANewActionOption) => {
     funcMap,
     refactorMap,
   });
+  console.log(ans);
 
   const actionType = ans.actionType as ActionType;
 
@@ -122,11 +124,14 @@ export const MWANewAction = async (options: IMWANewActionOption) => {
   }
 
   const getMwaPluginVersion = (packageName: string) => {
-    return getModernPluginVersion(Solution.MWA, packageName, {
+    console.time('getMwaPluginVersion');
+    const version = getModernPluginVersion(Solution.MWA, packageName, {
       registry,
       distTag,
       cwd,
     });
+    console.timeEnd('getMwaPluginVersion');
+    return version;
   };
 
   const devDependency =
@@ -135,12 +140,15 @@ export const MWANewAction = async (options: IMWANewActionOption) => {
     MWAActionFunctionsDependencies[action as ActionFunction] ||
     MWAActionRefactorDependencies[action as ActionRefactor];
 
+  console.time('usePluginNameExport');
   const shouldUsePluginNameExport = await usePluginNameExport(Solution.MWA, {
     registry,
     distTag,
     cwd,
   });
+  console.timeEnd('usePluginNameExport');
 
+  console.time('finalConfig');
   const finalConfig = merge(
     UserConfig,
     { noNeedInstall: !needInstall },
@@ -166,8 +174,10 @@ export const MWANewAction = async (options: IMWANewActionOption) => {
       pluginName: MWANewActionPluginName[actionType][action],
       pluginDependence: MWANewActionPluginDependence[actionType][action],
       shouldUsePluginNameExport,
+      getGeneratorPath,
     },
   );
+  console.timeEnd('finalConfig');
 
   const task = [
     {
@@ -176,6 +186,7 @@ export const MWANewAction = async (options: IMWANewActionOption) => {
     },
   ];
 
+  console.time('smith.forge');
   await smith.forge({
     tasks: task.map(runner => ({
       generator: runner.name,
@@ -183,4 +194,5 @@ export const MWANewAction = async (options: IMWANewActionOption) => {
     })),
     pwd: cwd,
   });
+  console.timeEnd('smith.forge');
 };

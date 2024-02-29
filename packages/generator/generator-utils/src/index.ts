@@ -36,6 +36,7 @@ export async function getPackageVersion(
   packageName: string,
   registry?: string,
 ) {
+  console.time('getPackageVersion');
   const spinner = ora({
     text: 'Load Generator...',
     spinner: 'runner',
@@ -59,6 +60,7 @@ export async function getPackageVersion(
     return stripAnsi(result.stdout);
   }
   spinner.stop();
+  console.timeEnd('getPackageVersion');
   throw new Error('not found npm, please install npm before');
 }
 
@@ -84,6 +86,10 @@ export async function getModernPluginVersion(
     const version = await getPackageVersion(
       `${packageName}@${tag || distTag || 'latest'}`,
       registry,
+    );
+    console.log(
+      'getLatetPluginVersiongetLatetPluginVersiongetLatetPluginVersion',
+      version,
     );
     return version;
   };
@@ -111,7 +117,10 @@ export async function getModernPluginVersion(
     );
   }
 
+  console.log('pkgPath', pkgPath);
+
   if (fs.existsSync(pkgPath)) {
+    console.log('existsSyncexistsSyncexistsSyncexistsSync');
     const pkgInfo = fs.readJSONSync(pkgPath);
 
     const modernVersion = pkgInfo.version;

@@ -8,5 +8,5 @@
     "esModuleInterop": true,
     "paths": {}
   },
-  "include": ["src"]
+  "include": ["src", "scripts"]
 }

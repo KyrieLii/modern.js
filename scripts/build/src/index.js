@@ -165,7 +165,7 @@ const tscLikeBuildConfig = [
 
 const generatorBuildConfig = {
   target: 'es2019',
-  autoExternal: false,
+  autoExternal: true,
   alias: {
     chalk: '@modern-js/utils/chalk',
   },
