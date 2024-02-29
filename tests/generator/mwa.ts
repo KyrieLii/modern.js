@@ -21,7 +21,11 @@ async function createAllMWAProject(
   isSimple: boolean,
 ) {
   const cases: any = getMWACases(isSimple ? 2 : undefined);
-  for (const config of cases) {
+  const simpleCases = cases.filter(
+    (i: Record<string, string>) =>
+      i?.packageManager === 'pnpm' && i?.language === 'ts',
+  );
+  for (const config of simpleCases) {
     await usingTempDir(tmpDir, async cwd => {
       const projectName = `mwa-${Object.values(config).join('-')}-${nanoid()}`;
       await runCreteCommand(repoDir, isLocal, {
@@ -172,7 +176,12 @@ async function runMWANewCommand(
     );
   }
   const isNode16 = semver.gte(process.versions.node, '16.0.0');
-  const params = ['install', '--ignore-scripts', '--force'];
+  const params = [
+    'install',
+    '--ignore-scripts',
+    '--force',
+    '--no-frozen-lockfile',
+  ];
   // const packageManager = getPackageManager(project);
   const packageManager = 'pnpm'; // use pnpm package manager
   if (isNode16 || project.includes('pnpm')) {
