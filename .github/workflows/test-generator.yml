@@ -25,6 +25,11 @@ jobs:
           node-version: '18'
           cache: 'pnpm'
 
+      - name: Set Git
+        run: |
+          git config --global user.email "you@example.com"
+          git config --global user.name "Your Name"
+
       - name: Install Dependencies
         run: |
           pnpm install
