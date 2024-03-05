@@ -97,19 +97,26 @@ export async function getModernPluginVersion(
   ) {
     return getLatetPluginVersion('latest');
   }
-  // get project solution version
-  let pkgPath = path.join(
-    require.resolve(SolutionToolsMap[solution], { paths: [cwd] }),
-    '../../..',
-    'package.json',
-  );
-  if (solution === Solution.Module) {
+  let pkgPath = '';
+  try {
+    // get project solution version
     pkgPath = path.join(
       require.resolve(SolutionToolsMap[solution], { paths: [cwd] }),
-      '../..',
+      '../../..',
       'package.json',
     );
+    if (solution === Solution.Module) {
+      pkgPath = path.join(
+        require.resolve(SolutionToolsMap[solution], { paths: [cwd] }),
+        '../..',
+        'package.json',
+      );
+    }
+  } catch {
+    // do nothing
   }
+
+  console.log('====== pkgPath', cwd, pkgPath);
 
   if (fs.existsSync(pkgPath)) {
     const pkgInfo = fs.readJSONSync(pkgPath);

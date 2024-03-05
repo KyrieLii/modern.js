@@ -66,6 +66,8 @@ export async function getAvailableVersion(
   let times = 5;
   let version = currentVersion;
   while (times) {
+    console.log('times111', times);
+    console.time('isPackageExist');
     if (
       !(await isPackageExist(`${packageName}@${version}`, registry)) ||
       (await isPackageDeprecated(`${packageName}@${version}`, registry))
@@ -74,11 +76,16 @@ export async function getAvailableVersion(
       times--;
       continue;
     }
+    console.timeEnd('isPackageExist');
+    console.log('times1111111', version);
+
     return version;
   }
   times = 5;
   while (times) {
     version = semverDecrease(version)!;
+    console.log('times222', times, version);
+
     if (
       !(await isPackageExist(`${packageName}@${version}`, registry)) ||
       (await isPackageDeprecated(`${packageName}@${version}`, registry))
